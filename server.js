@@ -8,19 +8,13 @@ let path = require("path");
 let app = express();
 let PORT = process.env.PORT || 3001;
 
-// Sets up the Express app to handle data parsing
+// Sets up the Express app to handle fullHouse parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Star Wars Characters (DATA)
+// Restaurant Customers (fullHouse)
 // =============================================================
-let customers = 
-[{
-    customerName: "yoda",
-    phoneNumber: "Yoda",
-    customerEmail: "Jedi Master",
-    customerID: 900
-}];
+let customers = [];
 
 let waitlist = [];
 
@@ -59,26 +53,31 @@ app.post("/api/clear", function(req, res)
 });
 
 // Create New Characters - takes in JSON input
-app.post("/api/tables", function(req, res) {
-  // req.body hosts is equal to the JSON post sent from the user
-  // This works because of our body parsing middleware
-  let newReservation = req.body;
+app.post("/api/tables", function(req, res) 
+{
+    // req.body hosts is equal to the JSON post sent from the user
+    // This works because of our body parsing middleware
 
-  // Using a RegEx Pattern to remove spaces from newCharacter
-  // You can read more about RegEx Patterns later https://www.regexbuddy.com/regex.html
+    let newReservation = req.body;
+    let fullHouse = true;
 
-  console.log(newReservation);
+    // Using a RegEx Pattern to remove spaces from newCharacter
+    // You can read more about RegEx Patterns later https://www.regexbuddy.com/regex.html
 
-  if(customers.length < 5)
-  {
-    customers.push(newReservation);
-  }
-  else
-  {
-    waitlist.push(newReservation);
-  }
+    console.log(newReservation);
 
-  res.json(newReservation);
+    if(customers.length < 5)
+    {
+        customers.push(newReservation);
+        fullHouse = true;
+    }
+    else
+    {
+        waitlist.push(newReservation);
+        fullHouse = false;
+    }
+
+    res.send(fullHouse);
 });
 
 // Starts the server to begin listening
